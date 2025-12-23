@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 align="center">Удаление книги</h1>
+    <p align="center"><a class="admin-link" href="{{ url_for('books') }}">Вернуться в каталог</a></p>
+    <p align="center"><a class="admin-link" href="{{ url_for('edit_book',id=book.id) }}">редактировать книгу</a></p>
+    <div class="content">
+        <p>Вы уверены, что хотите удалить книгу {{ book.name }} авторства {{ book.author }}?</p>
+        <p>Вернуть данные по книге будет невозможно.</p>
+        <form method="post">
+            <input type="submit">
+        </form>
+    </div>
+
+{% endblock %}

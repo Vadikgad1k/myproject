@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 align="center">{{ action_name }} книги</h1>
+    <p align="center"><a class="admin-link" href="{{ url_for('books') }}">Вернуться в каталог</a></p>
+    {% if action_name=='Редактирование' %}
+        <p align="center"><a class="admin-link" href="{{ url_for('remove_book',id=book_id) }}">удалить</a></p>
+    {% endif %}
+    <div class="pass">
+        <div class="container" id="image-c">
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.csrf_token() }}
+                {% for field in form if field.name != "csrf_token" and field.name != "submit" %}
+                    {{ field.label() }}
+                    {% if field.description %}
+                        <i>{{ field.description }}</i>
+                    {% endif %}
+                    {{ field }}
+                    <ul style="list-style-type: none;">
+                        {% for error in field.errors %}
+                            <li style="color: red;">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+                {{ form.submit() }}
+				<input type="reset" value="Сброс">
+            </form>
+        </div>
+
+        <div class="container" id="preview">
+            <img id="image-canvas" src="{% if file %} {{ file }} {% else %} {{ url_for('static', filename='img/default_book_cover.jpg') }} {% endif %}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+    <script>
+        $('input[type="file"]').change(function() {
+            if ($(this).val() != '') $(this).prev().text('Выбрано файлов: ' + $(this)[0].files.length);
+            else $(this).prev().text('Выберите файлы');
+            readURL(this);
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#image-canvas').attr('src', e.target.result);
+                    // $('#preview').css({"background-image": "url(" + e.target.result + ")"});
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+{% endblock%}
